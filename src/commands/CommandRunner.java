@@ -20,7 +20,7 @@ public class CommandRunner {
 
     public static final Map<String, Command> commands = new HashMap<>();
 
-    {
+    static {
         commands.put("help", new Help());
         commands.put("add", new Add());
         commands.put("show", new Show());
@@ -61,7 +61,11 @@ public class CommandRunner {
             } else {
                 lastCommands.add(commandWord);
             }
-            commands.get(commandWord).execute(list, arguments, path);
+            try {
+                commands.get(commandWord).execute(list, arguments, path);
+            } catch (IllegalArgumentException exc) {
+                System.out.print(exc.getMessage() + "\n");
+            }
         } else {
             System.out.print("Неизвестная команда " + commandWord + ". Введите help для просмтора списка доступных команд.\n");
         }

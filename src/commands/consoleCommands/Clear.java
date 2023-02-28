@@ -1,6 +1,10 @@
 package commands.consoleCommands;
 
+import exceptions.InvalidArgsException;
+import parameters.Coordinates;
 import parameters.MusicBand;
+import parameters.MusicGenre;
+import parameters.Studio;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -11,11 +15,17 @@ public class Clear implements Command {
     public final static String[] args = new String[0];
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
-        System.out.println("Вы уверены, что хотите очистить коллекцию? Данное действие необратимо. (y/n)");
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        if(confirm(input)){
-            list.clear();
+        try {
+            if(Command.isCorrectArgs(args, arguments)){
+                System.out.println("Вы уверены, что хотите очистить коллекцию? Данное действие необратимо. (y/n)");
+                Scanner sc = new Scanner(System.in);
+                String input = sc.nextLine();
+                if(confirm(input)){
+                    list.clear();
+                }
+            }
+        } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
         }
         return list;
     }

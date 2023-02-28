@@ -1,5 +1,6 @@
 package commands.consoleCommands;
 
+import exceptions.InvalidArgsException;
 import parameters.MusicBand;
 
 import java.io.File;
@@ -13,22 +14,29 @@ public class Save implements Command{
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
         try {
-            File file = new File(path);
-            if (!file.exists()) {
-                file.createNewFile();
+            if(Command.isCorrectArgs(args, arguments)){
+                try {
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    PrintWriter pw = new PrintWriter(file);
+                    pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    pw.println("<MusicBands>");
+                    for (MusicBand band : list) {
+                        pw.println("\t<MusicBand " + "id=\"" + band.getId() + "\" name=\"" + band.getName() + "\" genre=\"" + band.getGenre().toString() + "\" x=\"" + band.getCoordinates().getX() + "\" y=\"" + band.getCoordinates().getY() + "\" studio=\"" + band.getStudio().getName() + "\" number_of_participants=\"" + band.getNOP() + "\" />");
+                    }
+                    pw.println("</MusicBands>");
+                    System.out.println("Коллекция сохранена в файл: " + path);
+                    pw.close();
+                } catch (IOException e) {
+                    System.out.println("Ошибка " + e);
+                }
             }
-            PrintWriter pw = new PrintWriter(file);
-            pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            pw.println("<MusicBands>");
-            for (MusicBand band : list) {
-                pw.println("\t<MusicBand " + "id=\"" + band.getId() + "\" name=\"" + band.getName() + "\" genre=\"" + band.getGenre().toString() + "\" x=\"" + band.getCoordinates().getX() + "\" y=\"" + band.getCoordinates().getY() + "\" studio=\"" + band.getStudio().getName() + "\" number_of_participants=\"" + band.getNOP() + "\" />");
-            }
-            pw.println("</MusicBands>");
-            System.out.println("Коллекция сохранена в файл: " + path);
-            pw.close();
-        } catch (IOException e) {
-            System.out.println("Ошибка " + e);
+        } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
         }
+
         return list;
     }
 

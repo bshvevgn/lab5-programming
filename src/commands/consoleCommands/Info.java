@@ -1,5 +1,6 @@
 package commands.consoleCommands;
 
+import exceptions.InvalidArgsException;
 import parameters.MusicBand;
 
 import java.io.File;
@@ -20,28 +21,35 @@ public class Info implements Command{
     public final static String[] args = new String[0];
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
-        Path filepath = Paths.get(path);
-        BasicFileAttributes attr;
-        FileTime fileTime;
-
-        System.out.println("Тип коллекции: " + list.getClass().getName());
-        System.out.println("Размер коллекции: " + list.size());
         try {
-            attr = Files.readAttributes(filepath, BasicFileAttributes.class);
-            System.out.println("Дата инициализации: " + attr.creationTime());
+            if(Command.isCorrectArgs(args, arguments)){
+                Path filepath = Paths.get(path);
+                BasicFileAttributes attr;
+                FileTime fileTime;
 
-        } catch (IOException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+                System.out.println("Тип коллекции: " + list.getClass().getName());
+                System.out.println("Размер коллекции: " + list.size());
+                try {
+                    attr = Files.readAttributes(filepath, BasicFileAttributes.class);
+                    System.out.println("Дата инициализации: " + attr.creationTime());
+
+                } catch (IOException e) {
+                    System.out.println("Ошибка: " + e.getMessage());
+                }
+                try {
+                    fileTime = Files.getLastModifiedTime(filepath);
+                    printFileTime(fileTime);
+                } catch (IOException e) {
+                    System.err.println("Cannot get the last modified time - " + e);
+                }
+                for (MusicBand band : list) {
+                    System.out.println("\t-" + band.getName());
+                }
+            }
+        } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
         }
-        try {
-            fileTime = Files.getLastModifiedTime(filepath);
-            printFileTime(fileTime);
-        } catch (IOException e) {
-            System.err.println("Cannot get the last modified time - " + e);
-        }
-        for (MusicBand band : list) {
-            System.out.println("\t-" + band.getName());
-        }
+
         return list;
     }
 

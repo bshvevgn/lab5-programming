@@ -1,5 +1,6 @@
 package commands.consoleCommands;
 
+import exceptions.InvalidArgsException;
 import parameters.MusicBand;
 
 import java.util.ArrayList;
@@ -10,7 +11,9 @@ public class Help implements Command {
 
     @Override
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
-            System.out.println("""
+        try {
+            if(Command.isCorrectArgs(args, arguments)){
+                System.out.println("""
                     help : вывести справку по доступным командам
                     info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)
                     show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении
@@ -28,6 +31,10 @@ public class Help implements Command {
                     average_of_number_of_participants : вывести среднее значение поля numberOfParticipants для всех элементов коллекции
                     filter_by_genre genre : вывести элементы, значение поля genre которых равно заданному
                     print_field_descending_genre : вывести значения поля genre всех элементов в порядке убывания""");
+            }
+        } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
+        }
             return list;
     }
 

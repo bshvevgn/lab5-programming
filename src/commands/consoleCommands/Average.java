@@ -1,6 +1,10 @@
 package commands.consoleCommands;
 
+import exceptions.InvalidArgsException;
+import parameters.Coordinates;
 import parameters.MusicBand;
+import parameters.MusicGenre;
+import parameters.Studio;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -12,10 +16,17 @@ public class Average implements Command {
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
         int NOPsum = 0;
-        for(int i = 0; i < list.size(); i++){
-            NOPsum += list.get(i).getNOP();
+        try {
+            if(Command.isCorrectArgs(args, arguments)){
+                for(int i = 0; i < list.size(); i++){
+                    NOPsum += list.get(i).getNOP();
+                }
+                System.out.println("Среднее кол-во участиников: " + (NOPsum/list.size()));
+            }
+        } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
         }
-        System.out.println("Среднее кол-во участиников: " + (NOPsum/list.size()));
+
         return list;
     }
 
