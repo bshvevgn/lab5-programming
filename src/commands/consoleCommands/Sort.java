@@ -1,0 +1,43 @@
+package commands.consoleCommands;
+
+import parameters.MusicBand;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class Sort implements Command{
+
+    public final static String[] args = new String[0];
+
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
+
+        for (int k = 0; k < list.size(); k++) {
+            if (k < list.size() - 1) {
+                if (list.get(k + 1).getId() < list.get(k).getId()) {
+                    sorting(list);
+                }
+            }
+        }
+
+        System.out.println("Коллекция отсортирована по ID.");
+        return list;
+    }
+
+    private void sorting(ArrayList<MusicBand> list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (i < list.size() - 1) {
+                if (list.get(i).getId() > list.get(i + 1).getId()) {
+                    Collections.swap(list, i, i + 1);
+                    sorting(list);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public String[] args() {
+        return args;
+    }
+}

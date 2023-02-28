@@ -1,0 +1,27 @@
+package commands.consoleCommands;
+
+import parameters.MusicBand;
+
+import java.util.ArrayList;
+
+public class Show implements Command{
+
+    public final static String[] args = new String[0];
+
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+        if (list.size() == 0){
+            System.out.println("Коллекция пуста.");
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println("ID: " + list.get(i).getId() + "\nИмя: " + list.get(i).getName() + "\nЖанр: " + list.get(i).getGenre() + "\nX: " + list.get(i).getCoordinates().getX() + "\nY: " + list.get(i).getCoordinates().getY() + "\nСтудия: " + list.get(i).getStudio().getName() + "\nКол-во участников: " + list.get(i).getNOP());
+                System.out.println("");
+            }
+        }
+    return list;
+    }
+
+    @Override
+    public String[] args() {
+        return args;
+    }
+}
