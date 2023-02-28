@@ -8,9 +8,15 @@ import parameters.MusicBand;
 import java.io.BufferedReader;
 import java.util.*;
 
+/**
+ * This class is necessary for reading and executing commands
+ */
+
 public class CommandRunner {
 
     String path = "";
+
+    boolean isScriptRunning = false;
 
     public CommandRunner(String path) {
         this.path = path;
@@ -38,7 +44,7 @@ public class CommandRunner {
         commands.put("average_of_nop", new Average());
         commands.put("info", new Info());
         commands.put("filter_by_genre", new Filter());
-        commands.put("genre", new PrintGenre());
+        commands.put("print_field_descending_genre", new PrintGenre());
         commands.put("save", new Save());
     }
 
@@ -46,7 +52,19 @@ public class CommandRunner {
         return lastCommands;
     }
 
-    public static void runCommand(ArrayList<MusicBand> list, String line, String path) throws InvalidArgsException {
+    public boolean isScriptRunning() {
+        return isScriptRunning;
+    }
+
+    public void setScriptRunning(boolean scriptRunning) {
+        isScriptRunning = scriptRunning;
+    }
+
+    /*
+     *This class has a static method runCommand which reads commands
+     *and executes them.
+     */
+    public static void runCommand(ArrayList<MusicBand> list, String line, String path, boolean isScriptRunning) throws InvalidArgsException {
         if(line.equals("")) return;
         String commandWord = line.toLowerCase().split(" ")[0];
         String[] arguments = new String[line.split(" ").length - 1];
@@ -62,7 +80,7 @@ public class CommandRunner {
                 lastCommands.add(commandWord);
             }
             try {
-                commands.get(commandWord).execute(list, arguments, path);
+                commands.get(commandWord).execute(list, arguments, path, isScriptRunning);
             } catch (IllegalArgumentException exc) {
                 System.out.print(exc.getMessage() + "\n");
             }

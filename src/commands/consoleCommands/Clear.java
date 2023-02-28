@@ -10,11 +10,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * This command prints the elements of the collection ArrayList<MusicBand>, whose describe value is lower than the arguments'
+ */
+
 public class Clear implements Command {
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 System.out.println("Вы уверены, что хотите очистить коллекцию? Данное действие необратимо. (y/n)");

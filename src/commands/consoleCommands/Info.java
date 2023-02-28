@@ -16,11 +16,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This command prints information about collection ArrayList<MusicBand>.
+ */
+
 public class Info implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 Path filepath = Paths.get(path);
@@ -29,24 +33,16 @@ public class Info implements Command{
 
                 System.out.println("Тип коллекции: " + list.getClass().getName());
                 System.out.println("Размер коллекции: " + list.size());
-                try {
-                    attr = Files.readAttributes(filepath, BasicFileAttributes.class);
-                    System.out.println("Дата инициализации: " + attr.creationTime());
-
-                } catch (IOException e) {
-                    System.out.println("Ошибка: " + e.getMessage());
-                }
-                try {
-                    fileTime = Files.getLastModifiedTime(filepath);
-                    printFileTime(fileTime);
-                } catch (IOException e) {
-                    System.err.println("Cannot get the last modified time - " + e);
-                }
+                attr = Files.readAttributes(filepath, BasicFileAttributes.class);
+                System.out.println("Дата инициализации: " + attr.creationTime());
+                System.out.println("Дата изменения: " + attr.lastModifiedTime());
                 for (MusicBand band : list) {
-                    System.out.println("\t-" + band.getName());
+                    System.out.println("\t- " + band.getName());
                 }
             }
         } catch (InvalidArgsException e){
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 

@@ -1,5 +1,9 @@
 package parameters;
 
+/**
+ * Enumerated data type used for describing MusicBand's music genre
+ */
+
 public enum MusicGenre {
     PSYCHEDELIC_ROCK,
     PSYCHEDELIC_CLOUD_RAP,

@@ -6,11 +6,15 @@ import parameters.MusicBand;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This command sorts collection ArrayList<MusicBand> in reverted order.
+ */
+
 public class Reorder implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 Collections.reverse(list);

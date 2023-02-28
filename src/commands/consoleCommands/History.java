@@ -8,11 +8,15 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This command prints the last 15 executed commands without their arguments.
+ */
+
 public class History implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 ArrayList<String> history = new CommandRunner("").getLastCommands();

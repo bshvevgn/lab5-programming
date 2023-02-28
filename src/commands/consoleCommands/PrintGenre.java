@@ -7,11 +7,15 @@ import parameters.MusicGenre;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This command prints elements of the collection ArrayList<MusicBand> in descending order of genre value.
+ */
+
 public class PrintGenre implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 MusicGenre[] genres = MusicGenre.values();

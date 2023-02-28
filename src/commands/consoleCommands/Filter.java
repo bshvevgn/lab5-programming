@@ -6,11 +6,15 @@ import parameters.MusicBand;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This command prints elements of the collection ArrayList<MusicBand> with the specified genre parameter.
+ */
+
 public class Filter implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 if (list.size() == 0){

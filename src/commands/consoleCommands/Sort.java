@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * This command sorts collection ArrayList<MusicBand> in natural order.
+ */
+
 public class Sort implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 for (int k = 0; k < list.size(); k++) {

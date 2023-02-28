@@ -5,8 +5,12 @@ import parameters.MusicBand;
 
 import java.util.ArrayList;
 
+/**
+ * This interface is implemented by all commands.
+ */
+
 public interface Command {
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) throws InvalidArgsException;
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) throws InvalidArgsException;
 
     String[] args();
 

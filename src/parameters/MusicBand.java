@@ -2,6 +2,10 @@ package parameters;
 
 import java.time.LocalDate;
 
+/**
+ * Class required for storing MusicBand instances
+ */
+
 public class MusicBand {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой

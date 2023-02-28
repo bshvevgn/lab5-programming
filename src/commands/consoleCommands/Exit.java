@@ -8,11 +8,15 @@ import parameters.Studio;
 
 import java.util.ArrayList;
 
+/**
+ * This command end shuts down the program
+ */
+
 public class Exit implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 System.exit(0);

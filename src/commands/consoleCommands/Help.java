@@ -5,12 +5,16 @@ import parameters.MusicBand;
 
 import java.util.ArrayList;
 
+/**
+ * This command prints information about all available commands
+ */
+
 public class Help implements Command {
 
     public final static String[] args = new String[0];
 
     @Override
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 System.out.println("""

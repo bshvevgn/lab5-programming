@@ -6,11 +6,15 @@ import parameters.MusicBand;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This command shuffles the elements of the collection ArrayList<MusicBand> in random order.
+ */
+
 public class Shuffle implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 Collections.shuffle(list);

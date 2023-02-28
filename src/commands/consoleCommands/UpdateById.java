@@ -14,11 +14,15 @@ import static java.lang.Double.*;
 import static java.lang.Float.parseFloat;
 import static java.lang.Long.parseLong;
 
+/**
+ * This command updates element of collection ArrayList<MusicBand> which ID equals argument.
+ */
+
 public class UpdateById implements Command{
 
-    public final static String[] args = new String[1];
+    public final static String[] args = {"id"};
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 if(Integer.parseInt(arguments[0]) <= list.size() - 1) {

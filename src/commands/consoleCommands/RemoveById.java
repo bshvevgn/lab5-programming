@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * This command removes element from main collection Stack<MusicBand> which ID value equals argument.
+ */
+
 public class RemoveById implements Command {
 
     public final static String[] args = {"id"};
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) {
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 if (Integer.parseInt(arguments[0]) > list.size() - 1){

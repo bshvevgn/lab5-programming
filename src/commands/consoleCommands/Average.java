@@ -14,7 +14,7 @@ public class Average implements Command {
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path){
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
         int NOPsum = 0;
         try {
             if(Command.isCorrectArgs(args, arguments)){

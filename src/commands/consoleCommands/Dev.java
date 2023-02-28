@@ -12,7 +12,7 @@ public class Dev implements Command{
 
     public final static String[] args = new String[0];
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path) throws InvalidArgsException {
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) throws InvalidArgsException {
         try {
             if(Command.isCorrectArgs(args, arguments)){
                 for (int i = 0; i < 10; i++) {

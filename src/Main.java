@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+/**
+ * @author Башаримов Евгений Александрович
+ */
+
 public class Main {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, InvalidArgsException {
         String dataPath = "src/data/" + args[0];
@@ -34,7 +38,7 @@ public class Main {
 
                 if (line == null) {
                     System.exit(1);
-                } else new CommandRunner(dataPath).runCommand(collection, line, dataPath);
+                } else new CommandRunner(dataPath).runCommand(collection, line, dataPath, false);
             }
     }
 }

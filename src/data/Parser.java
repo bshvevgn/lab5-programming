@@ -17,9 +17,19 @@ import java.util.ArrayList;
 
 import static java.lang.Long.parseLong;
 
+/**
+ * This class makes conversion between MusicBand instances and XML structure
+ */
+
 public class Parser {
 
     public static ArrayList<MusicBand> list = new ArrayList<>();
+
+    /**
+     * Static method used for conversation XML structure into MusicBand instances
+     *
+     * @param input - path of XML-document
+     */
     public static ArrayList<MusicBand> serialize(String input) throws ParserConfigurationException, SAXException, IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
