@@ -1,0 +1,8 @@
+dev
+shuffle
+reorder
+reorder
+sort
+help
+show
+add SomeBand POST_ROCK 12.4 16 Studio 4
