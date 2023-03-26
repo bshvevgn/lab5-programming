@@ -1,10 +1,7 @@
 package commands.consoleCommands;
 
-import exceptions.InvalidArgsException;
-import parameters.Coordinates;
+import commands.Receiver;
 import parameters.MusicBand;
-import parameters.MusicGenre;
-import parameters.Studio;
 
 import java.util.ArrayList;
 
@@ -15,16 +12,19 @@ import java.util.ArrayList;
 public class Exit implements Command{
 
     public final static String[] args = new String[0];
+    public static String[] inputs = new String[0];
+    public String[] getInputs() {
+        return inputs;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        try {
-            if(Command.isCorrectArgs(args, arguments)){
-                System.exit(0);
-            }
-        } catch (InvalidArgsException e){
-            System.out.println(e.getMessage());
-        }
-            return list;
+        Receiver reciever = new Receiver(path);
+        reciever.exitCommand(list, arguments, path, isScript);
+        return list;
     }
 
     @Override

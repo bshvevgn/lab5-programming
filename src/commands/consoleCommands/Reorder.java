@@ -1,10 +1,9 @@
 package commands.consoleCommands;
 
-import exceptions.InvalidArgsException;
+import commands.Receiver;
 import parameters.MusicBand;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * This command sorts collection ArrayList<MusicBand> in reverted order.
@@ -13,17 +12,18 @@ import java.util.Collections;
 public class Reorder implements Command{
 
     public final static String[] args = new String[0];
+    public static String[] inputs = new String[0];
+    public String[] getInputs() {
+        return inputs;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        try {
-            if(Command.isCorrectArgs(args, arguments)){
-                Collections.reverse(list);
-                System.out.println("Коллекция отсортирована в обратном порядке.");
-            }
-        } catch (InvalidArgsException e){
-            System.out.println(e.getMessage());
-        }
-
+        Receiver reciever = new Receiver(path);
+        reciever.reorderCommand(list, arguments, path, isScript);
         return list;
     }
 

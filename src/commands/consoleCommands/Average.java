@@ -1,32 +1,25 @@
 package commands.consoleCommands;
 
-import exceptions.InvalidArgsException;
-import parameters.Coordinates;
+import commands.Receiver;
 import parameters.MusicBand;
-import parameters.MusicGenre;
-import parameters.Studio;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
 
 public class Average implements Command {
 
     public final static String[] args = new String[0];
+    public static String[] inputs = new String[0];
+    public String[] getInputs() {
+        return inputs;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
 
     public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        int NOPsum = 0;
-        try {
-            if(Command.isCorrectArgs(args, arguments)){
-                for(int i = 0; i < list.size(); i++){
-                    NOPsum += list.get(i).getNOP();
-                }
-                System.out.println("Среднее кол-во участиников: " + (NOPsum/list.size()));
-            }
-        } catch (InvalidArgsException e){
-            System.out.println(e.getMessage());
-        }
-
+        Receiver reciever = new Receiver(path);
+        reciever.averageCommand(list, arguments, path, isScript);
         return list;
     }
 

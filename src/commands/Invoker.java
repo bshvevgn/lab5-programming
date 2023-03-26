@@ -12,17 +12,7 @@ import java.util.*;
  * This class is necessary for reading and executing commands
  */
 
-public class CommandRunner {
-
-    String path = "";
-
-    boolean isScriptRunning = false;
-
-    public CommandRunner(String path) {
-        this.path = path;
-    }
-
-    static ArrayList<String> lastCommands = new ArrayList<String>();
+public class Invoker {
 
     public static final Map<String, Command> commands = new HashMap<>();
 
@@ -35,7 +25,6 @@ public class CommandRunner {
         commands.put("reorder", new Reorder());
         commands.put("shuffle", new Shuffle());
         commands.put("sort", new Sort());
-        commands.put("dev", new Dev());
         commands.put("history", new History());
         commands.put("remove_by_id", new RemoveById());
         commands.put("update_by_id", new UpdateById());
@@ -48,30 +37,53 @@ public class CommandRunner {
         commands.put("save", new Save());
     }
 
+    public boolean isScriptRunning = false;
+
+    static Command command = new Command() {
+        @Override
+        public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) throws InvalidArgsException {
+            return list;
+        }
+
+        @Override
+        public String[] args() {
+            return new String[0];
+        }
+
+        @Override
+        public String[] getArgs() {
+            return new String[0];
+        }
+
+        @Override
+        public String[] getInputs() {
+            return new String[0];
+        }
+    };
+
+    public static String[] arguments;
+
+    public static String commandWord;
+
+    public Invoker(String command, String[] arguments) {
+        this.commandWord = command;
+        this.arguments = arguments;
+    }
+
+    static ArrayList<String> lastCommands = new ArrayList<String>();
+
     public static ArrayList<String> getLastCommands() {
         return lastCommands;
     }
 
-    public boolean isScriptRunning() {
-        return isScriptRunning;
-    }
 
-    public void setScriptRunning(boolean scriptRunning) {
-        isScriptRunning = scriptRunning;
-    }
+    public static int inputsCount = 0;
 
     /*
-     *This class has a static method runCommand which reads commands
+     *This class has a static method push which reads commands
      *and executes them.
      */
-    public static void runCommand(ArrayList<MusicBand> list, String line, String path, boolean isScriptRunning) throws InvalidArgsException {
-        if(line.equals("")) return;
-        String commandWord = line.toLowerCase().split(" ")[0];
-        String[] arguments = new String[line.split(" ").length - 1];
-        for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = line.split(" ")[i + 1];
-        }
-
+    public static void push(ArrayList<MusicBand> list, String path, boolean isScriptRunning) throws InvalidArgsException {
         if(commands.containsKey(commandWord)) {
             if(lastCommands.size() == 15) {
                 lastCommands.remove(0);
@@ -79,10 +91,20 @@ public class CommandRunner {
             } else {
                 lastCommands.add(commandWord);
             }
+            command = commands.get(commandWord);
             try {
-                commands.get(commandWord).execute(list, arguments, path, isScriptRunning);
+                if(isScriptRunning){
+                    inputsCount = (command.getInputs().length);
+                    if(inputsCount == arguments.length-command.getArgs().length){
+                        command.execute(list, arguments, path, isScriptRunning);
+                    } else {
+                        System.out.println("Количество аргументов некорректно. Введено: " + arguments.length + ", необходимо: " + inputsCount);
+                    }
+                } else {
+                    command.execute(list, arguments, path, isScriptRunning);
+                }
             } catch (IllegalArgumentException exc) {
-                System.out.print(exc.getMessage() + "\n");
+                System.out.print("Введён неправильный тип данных.\n");
             }
         } else {
             System.out.print("Неизвестная команда " + commandWord + ". Введите help для просмтора списка доступных команд.\n");

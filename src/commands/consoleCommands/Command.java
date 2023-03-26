@@ -18,4 +18,7 @@ public interface Command {
         if (needArgs.length != providedArgs.length) throw new InvalidArgsException("Некорректное количество аргументов команды.");
         return true;
     }
+
+    public String[] getArgs();
+    public String[] getInputs();
 }

@@ -1,14 +1,9 @@
 package commands.consoleCommands;
 
-import exceptions.InvalidArgsException;
-import parameters.Coordinates;
+import commands.Receiver;
 import parameters.MusicBand;
-import parameters.MusicGenre;
-import parameters.Studio;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
 
 /**
  * This command prints the elements of the collection ArrayList<MusicBand>, whose describe value is lower than the arguments'
@@ -17,32 +12,19 @@ import java.util.Scanner;
 public class Clear implements Command {
 
     public final static String[] args = new String[0];
-
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        try {
-            if(Command.isCorrectArgs(args, arguments)){
-                System.out.println("Вы уверены, что хотите очистить коллекцию? Данное действие необратимо. (y/n)");
-                Scanner sc = new Scanner(System.in);
-                String input = sc.nextLine();
-                if(confirm(input)){
-                    list.clear();
-                }
-            }
-        } catch (InvalidArgsException e){
-            System.out.println(e.getMessage());
-        }
-        return list;
+    public static String[] inputs = new String[0];
+    public String[] getInputs() {
+        return inputs;
     }
 
-    public boolean confirm(String input){
-        boolean start = false;
-        if(Objects.equals(input, "y")) {
-            System.out.println("Коллекция очищена.");
-            start = true;
-        } else if(Objects.equals(input, "n")){
-            System.out.println("Операция отменена.");
-        }
-        return start;
+    public String[] getArgs() {
+        return args;
+    }
+
+    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
+        Receiver reciever = new Receiver(path);
+        reciever.clearCommand(list, arguments, path, isScript);
+        return list;
     }
 
     @Override

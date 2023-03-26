@@ -1,6 +1,7 @@
 package data;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import parameters.Coordinates;
@@ -11,8 +12,7 @@ import parameters.Studio;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 import static java.lang.Long.parseLong;
@@ -34,8 +34,12 @@ public class Parser {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
 
+        InputSource isource = new InputSource();
+        InputStream istream = new BufferedInputStream(new FileInputStream(input));
+        isource.setByteStream(istream);
+
         XMLHandler handler = new XMLHandler();
-        parser.parse(new File(input), handler);
+        parser.parse(isource, handler);
         return list;
     }
 

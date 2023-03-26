@@ -1,8 +1,6 @@
-dev
-shuffle
-reorder
-reorder
-sort
-help
+add pampampam POST_ROCK 12.4 16 SomeStudio 4
 show
-add SomeBand POST_ROCK 12.4 16 Studio 4
+shuffle
+show
+sort
+show

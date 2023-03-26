@@ -1,4 +1,4 @@
-import commands.CommandRunner;
+import commands.Receiver;
 import data.Parser;
 import exceptions.InvalidArgsException;
 import org.xml.sax.SAXException;
@@ -6,7 +6,6 @@ import parameters.MusicBand;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -23,15 +22,11 @@ public class Main {
 
             try {
                 collection = Parser.serialize(dataPath);
-            } catch (ParserConfigurationException e) {
-                System.out.print(e.getMessage() + "\n");
-            } catch (SAXException e) {
-                System.out.print(e.getMessage() + "\n");
-            } catch (IOException e) {
+            } catch (ParserConfigurationException | SAXException | IOException e) {
                 System.out.print(e.getMessage() + "\n");
             }
 
-            BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
 
             while (true) {
                 System.out.print(">>> ");
@@ -39,7 +34,7 @@ public class Main {
 
                 if (line == null) {
                     System.exit(1);
-                } else new CommandRunner(dataPath).runCommand(collection, line, dataPath, false);
+                } else new Receiver(dataPath).runCommand(collection, line, dataPath, false);
             }
     }
 }
