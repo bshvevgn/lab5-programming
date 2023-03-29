@@ -21,10 +21,19 @@ public class History implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.historyCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public History (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.historyCommand(arguments, path, isScript);
     }
 
     @Override

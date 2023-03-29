@@ -21,10 +21,19 @@ public class Shuffle implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.shuffleCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Shuffle (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.shuffleCommand(arguments, path, isScript);
     }
 
     @Override

@@ -21,10 +21,19 @@ public class Show implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.showCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Show (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute( String[] arguments, String path, boolean isScript){
+        receiver.showCommand(arguments, path, isScript);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Execute implements Command{
 
-    public final static String[] args = {"file_name"};
+    public final static String[] args = {"имя файла"};
     public static String[] inputs = new String[0];
     public String[] getInputs() {
         return inputs;
@@ -21,11 +21,20 @@ public class Execute implements Command{
         return args;
     }
 
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Execute (Receiver receiver){
+        this.receiver = receiver;
+    }
+
     @Override
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver receiver = new Receiver(path);
-        receiver.executeCommand(list, arguments, path, isScript);
-        return list;
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.executeCommand(arguments, path, isScript);
     }
 
     @Override

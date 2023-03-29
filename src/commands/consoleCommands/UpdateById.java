@@ -15,28 +15,28 @@ import static java.lang.Long.parseLong;
 
 public class UpdateById implements Command{
 
-    public final static String[] args = {"id"};
+    public final static String[] args = {"id элемента"};
     public static String[] inputs = new String[6];
     public String[] getInputs() {
         return inputs;
     }
-
     public String[] getArgs() {
         return args;
     }
 
-    public static String[] scrArgs = new String[6];
+    public boolean complicated = true;
 
-    public MusicBand newBand = new MusicBand();
-    public Coordinates coordinates = new Coordinates();
-    public Studio studio = new Studio();
-    public int idToReplace = 0;
-    String argument = "";
+    public boolean isComplicated(){
+        return complicated;
+    }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
-        Receiver receiver = new Receiver(path);
-        receiver.updateByIdCommand(list, arguments, path, isScript);
-        return list;
+    Receiver receiver;
+    public UpdateById (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript) {
+        receiver.updateByIdCommand(arguments, path, isScript);
     }
 
     @Override

@@ -1,6 +1,7 @@
 import commands.Receiver;
 import data.Parser;
 import exceptions.InvalidArgsException;
+import logic.Loader;
 import org.xml.sax.SAXException;
 import parameters.MusicBand;
 
@@ -15,26 +16,8 @@ import java.util.ArrayList;
  */
 
 public class Main {
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, InvalidArgsException {
-        String dataPath = "src/data/" + args[0];
-
-        ArrayList<MusicBand> collection = new ArrayList<>();
-
-            try {
-                collection = Parser.serialize(dataPath);
-            } catch (ParserConfigurationException | SAXException | IOException e) {
-                System.out.print(e.getMessage() + "\n");
-            }
-
-        BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
-
-            while (true) {
-                System.out.print(">>> ");
-                String line = scanner.readLine();
-
-                if (line == null) {
-                    System.exit(1);
-                } else new Receiver(dataPath).runCommand(collection, line, dataPath, false);
-            }
+    public static void main(String[] args) throws IOException, InvalidArgsException {
+        Client client = new Client(args);
+        client.start();
     }
 }

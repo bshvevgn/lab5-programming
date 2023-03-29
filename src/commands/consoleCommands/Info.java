@@ -24,15 +24,19 @@ public class Info implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.infoCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
     }
 
-    private static void printFileTime(FileTime fileTime) {
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        System.out.println("Дата изменения: " + dateFormat.format(fileTime.toMillis()));
+    Receiver receiver;
+    public Info (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.infoCommand(arguments, path, isScript);
     }
 
     @Override

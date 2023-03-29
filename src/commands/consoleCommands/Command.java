@@ -10,14 +10,18 @@ import java.util.ArrayList;
  */
 
 public interface Command {
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) throws InvalidArgsException;
+    public void execute(String[] arguments, String path, boolean isScript) throws InvalidArgsException;
 
     String[] args();
 
-    public static boolean isCorrectArgs(String[] needArgs, String[] providedArgs) throws InvalidArgsException {
+    boolean complicated = false;
+
+    static boolean isCorrectArgs(String[] needArgs, String[] providedArgs) throws InvalidArgsException {
         if (needArgs.length != providedArgs.length) throw new InvalidArgsException("Некорректное количество аргументов команды.");
         return true;
     }
+
+    boolean isComplicated();
 
     public String[] getArgs();
     public String[] getInputs();

@@ -21,10 +21,19 @@ public class Save implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.saveCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Save (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.saveCommand(arguments, path, isScript);
     }
 
     @Override

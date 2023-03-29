@@ -1,6 +1,9 @@
-add pampampam POST_ROCK 12.4 16 SomeStudio 4
 show
-shuffle
-show
-sort
+add
+name
+math_rock
+12.4
+22.4
+studio
+3
 show

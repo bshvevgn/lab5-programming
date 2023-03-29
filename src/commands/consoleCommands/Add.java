@@ -24,11 +24,19 @@ public class Add implements Command{
         return inputs;
     }
 
+    public boolean complicated = true;
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
-        Receiver reciever = new Receiver(path);
-        reciever.addCommand(list, arguments, path, isScript);
-        return list;
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Add (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript) {
+        receiver.addCommand(arguments, path, isScript);
     }
 
     @Override

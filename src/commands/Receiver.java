@@ -3,12 +3,14 @@ package commands;
 import commands.consoleCommands.*;
 
 import exceptions.InvalidArgsException;
+import logic.Loader;
 import parameters.Coordinates;
 import parameters.MusicBand;
 import parameters.MusicGenre;
 import parameters.Studio;
-import validators.GenreValidator;
-import validators.NameValidator;
+import validators.*;
+import validators.coordinatesValidators.XCoordinateValidator;
+import validators.coordinatesValidators.YCoordinateValidator;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDate;
 import java.util.*;
 
 import static java.lang.Double.parseDouble;
@@ -27,44 +30,47 @@ import static java.lang.Long.parseLong;
  */
 
 public class Receiver {
-
-    String path = "";
-
-    boolean isScriptRunning = false;
-
+    public static String path = "";
+    public static ArrayList<MusicBand> list;
     public Receiver(String path) {
         this.path = path;
+        list = new Loader(path).loadCollectionFromFile();
     }
 
-    public boolean isScriptRunning() {
-        return isScriptRunning;
-    }
-
+    boolean isScriptRunning = false;
     public void setScriptRunning(boolean scriptRunning) {
         isScriptRunning = scriptRunning;
     }
+    public boolean isScriptRunning(){
+        return isScriptRunning;
+    }
 
-    public static int inputsCount = 0;
 
     /*
      *This class has a static method runCommand which reads commands
      *and executes them.
      */
-    public static void runCommand(ArrayList<MusicBand> list, String line, String path, boolean isScriptRunning) throws InvalidArgsException {
+    public static void runCommand(String line, String path, boolean isScriptRunning) throws InvalidArgsException {
         if (line.equals("")) return;
-
         String commandWord = line.toLowerCase().split(" ")[0];
         String[] arguments = new String[line.split(" ").length - 1];
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = line.split(" ")[i + 1];
         }
 
-        Invoker invoker = new Invoker(commandWord, arguments);
-        invoker.push(list, path, isScriptRunning);
-
+        new Invoker(commandWord, arguments).push(list, path, isScriptRunning);
     }
 
-    public ArrayList<MusicBand> addCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public static String commandFromLine(String line){
+        String commandWord = line.toLowerCase().split(" ")[0];
+        String[] arguments = new String[line.split(" ").length - 1];
+        for (int i = 0; i < arguments.length; i++) {
+            arguments[i] = line.split(" ")[i + 1];
+        }
+        return commandWord;
+    }
+
+    public ArrayList<MusicBand> addCommand(String[] arguments, String path, boolean isScript) {
         BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 
         MusicBand newBand = new MusicBand();
@@ -83,7 +89,8 @@ public class Receiver {
                     operations.setY(newBand, sc, "");
                     operations.setStudio(newBand, sc, "");
                     operations.setNOP(newBand, sc, "");
-                    operations.done(list, newBand);
+                    operations.setDate(newBand, sc, "");
+                    operations.done(newBand);
                 }
             } else {
                 if (arguments.length == scrArgs.length) {
@@ -93,7 +100,8 @@ public class Receiver {
                     operations.setY(newBand, sc, arguments[3]);
                     operations.setStudio(newBand, sc, arguments[4]);
                     operations.setNOP(newBand, sc, arguments[5]);
-                    operations.done(list, newBand);
+                    operations.setDate(newBand, sc, "");
+                    operations.done(newBand);
                 } else {
                     System.out.println();
                 }
@@ -141,68 +149,61 @@ public class Receiver {
                 }
             } else {
                 argument = scrArg;
-                try {
+                if (genreValidator.validate(argument.toUpperCase())) {
                     MusicGenre mg = MusicGenre.valueOf(argument.toUpperCase());
                     newBand.setGenre(mg);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Введено неправильное значение.\n");
+                } else {
                     setGenre(newBand, sc, scrArg);
                 }
             }
         }
 
         public void setX(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
+            XCoordinateValidator xCoordinateValidator = new XCoordinateValidator();
             if (Objects.equals(scrArg, "")) {
                 System.out.print("\nВведите значение поля Coordinates.x: ");
                 argument = checkLine(sc);
-                try {
-                coordinates.setX(parseDouble(argument));
-                } catch (NumberFormatException e) {
-                    System.out.println("Введён неправильный тип данных.\n");
+                if (xCoordinateValidator.validate(argument)) {
+                    coordinates.setX(parseDouble(argument));
+                } else {
                     setX(newBand, sc, scrArg);
                 }
             } else {
                 argument = scrArg;
-                try {
+                if (xCoordinateValidator.validate(argument)) {
                     coordinates.setX(parseDouble(argument));
-                } catch (NumberFormatException e) {
-                    System.out.println("Введён неправильный тип данных.\n");
+                } else {
                     setX(newBand, sc, scrArg);
                 }
             }
         }
 
         public void setY(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
+            YCoordinateValidator yCoordinateValidator = new YCoordinateValidator();
             if (Objects.equals(scrArg, "")) {
-                System.out.print("\nведите значение поля Coordinates.y: ");
+                System.out.print("\nВведите значение поля Coordinates.y: ");
                 argument = checkLine(sc);
-                try {
+                if (yCoordinateValidator.validate(argument)) {
                     coordinates.setY(parseFloat(argument));
-                } catch (NumberFormatException e) {
-                    System.out.println("Введён неправильный тип данных.\n");
+                } else {
                     setY(newBand, sc, scrArg);
                 }
             } else {
                 argument = scrArg;
-                try {
+                if (yCoordinateValidator.validate(argument)) {
                     coordinates.setY(parseFloat(argument));
-                } catch (NumberFormatException e) {
-                    System.out.println("Введён неправильный тип данных.\n");
+                } else {
                     setY(newBand, sc, scrArg);
                 }
             }
         }
 
         public void setStudio(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
-            NameValidator nameValidator = new NameValidator();
             if (Objects.equals(scrArg, "")) {
                 System.out.print("\nВведите значение поля Studio.name: ");
                 argument = sc.readLine();
                 studio.setName(argument);
                 newBand.setStudio(studio);
-                if(!nameValidator.validate(argument)) {
-                    setStudio(newBand, sc, scrArg);
-                }
             } else {
                 argument = scrArg;
                 studio.setName(argument);
@@ -211,46 +212,37 @@ public class Receiver {
         }
 
         public void setNOP(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
+            NOPValidator nopValidator = new NOPValidator();
             if (Objects.equals(scrArg, "")) {
                 System.out.print("\nВведите значение поля NumberOfParticipants: ");
                 argument = checkLine(sc);
-                try {
-                    if (parseLong(argument) < 0) {
-                        System.out.println("Введите значение больше 0.");
-                        argument = sc.readLine();
-                        setNOP(newBand, sc, scrArg);
-                    }
+                if (nopValidator.validate(argument)) {
                     newBand.setNOP(parseLong(argument));
-                } catch (NumberFormatException e) {
-                    System.out.println("Введён неправильный тип данных.\n");
+                } else {
                     setNOP(newBand, sc, scrArg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             } else {
                 argument = scrArg;
-                try {
-                    if (parseLong(argument) < 0) {
-                        System.out.println("Введите значение больше 0.");
-                        argument = checkLine(sc);
-                        setNOP(newBand, sc, scrArg);
-                    }
+                if (nopValidator.validate(argument)) {
                     newBand.setNOP(parseLong(argument));
-                } catch (NumberFormatException e) {
+                } else {
                     System.out.println("Введён неправильный тип данных.\n");
                     setNOP(newBand, sc, scrArg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             }
         }
 
-        public void done(ArrayList<MusicBand> list, MusicBand newBand) {
+        public void setDate(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
+            newBand.setCreationDate(LocalDate.now());
+        }
+
+        public void done(MusicBand newBand) {
             newBand.setId(list.size());
             newBand.setCoordinates(coordinates);
             newBand.setStudio(studio);
             list.add(newBand);
             System.out.println("\nДобавлен новый объект: " + newBand.getName() + " (ID: " + newBand.getId() + ")");
+            System.out.println(newBand.getName().replace("\"","\\\""));
         }
 
         public String checkLine(BufferedReader sc) throws IOException {
@@ -264,7 +256,7 @@ public class Receiver {
         }
     }
 
-    public void averageCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void averageCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
 
         int NOPsum = 0;
@@ -281,7 +273,7 @@ public class Receiver {
 
     }
 
-    public void clearCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void clearCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
 
         try {
@@ -312,32 +304,40 @@ public class Receiver {
         }
     }
 
-    public void executeCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void executeCommand(String[] arguments, String path, boolean isScript) {
+        System.out.println("Выполнение скрипта...\n");
         String[] args = {"file_name"};
         try {
             if (Command.isCorrectArgs(args, arguments)) {
                 String script_path = arguments[0];
                 File script_file = new File(script_path);
                 try {
-                    Receiver runner = new Receiver("");
-                    runner.setScriptRunning(true);
+                    this.setScriptRunning(true);
                     Scanner sc = new Scanner(script_file);
                     if (sc.hasNext()) {
                         do {
-                            /*String line  = sc.nextLine();
-                            String commandWord = line.toLowerCase().split(" ")[0];
-                            Invoker.commands.get(commandWord).getArgs();
-                            Integer inputsCount = Invoker.commands.get(commandWord).getArgs().length;
-                            if(inputsCount == arguments.length-Invoker.commands.get(commandWord).getArgs().length){*/
-                                runner.runCommand(list, sc.nextLine(), "", true);
-                            /*} else {
-                                System.out.println("Количество аргументов некорректно. Введено: " + arguments.length + ", необходимо: " + inputsCount);
-                            }*/
+                            /*
+                            String name = sc.nextLine();
+
+                            if(isScriptRunning && Invoker.isContains(name)) {
+                                int argLines = 0;
+                                if (Invoker.getCommand(name).isComplicated()) {
+                                    argLines = Invoker.getCommand(name).getInputs().length;
+                                    for (int i = 0; i <= argLines - 1; i++) {
+                                        arguments[i] = sc.nextLine();
+                                    }
+                                }
+                            }
+                            */
+                            this.runCommand(sc.nextLine(), "", true);
                         } while (sc.hasNext());
+                        if(!sc.hasNext()){
+                            System.out.println("\nВыполнение скрипта завершено.");
+                        }
                     } else {
                         System.out.println("Скрипт не содержит команд.");
                     }
-                    runner.setScriptRunning(false);
+                    this.setScriptRunning(false);
                 } catch (FileNotFoundException e) {
                     System.out.println("Файл не обнаружен.");
                 } catch (InvalidArgsException e) {
@@ -349,7 +349,7 @@ public class Receiver {
         }
     }
 
-    public void exitCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void exitCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -360,7 +360,7 @@ public class Receiver {
         }
     }
 
-    public void filterCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void filterCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[1];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -386,7 +386,7 @@ public class Receiver {
 
     }
 
-    public void helpCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void helpCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -395,7 +395,7 @@ public class Receiver {
                         info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)
                         show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении
                         add {element} : добавить новый элемент в коллекцию
-                        update_by_id id {element} : обновить значение элемента коллекции, id которого равен заданному
+                        update id {element} : обновить значение элемента коллекции, id которого равен заданному
                         remove_by_id id : удалить элемент из коллекции по его id
                         clear : очистить коллекцию
                         save : сохранить коллекцию в файл
@@ -414,7 +414,7 @@ public class Receiver {
         }
     }
 
-    public void historyCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void historyCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -428,7 +428,7 @@ public class Receiver {
         }
     }
 
-    public void infoCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void infoCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -453,7 +453,7 @@ public class Receiver {
 
     }
 
-    public void printGenreCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void printGenreCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -477,7 +477,7 @@ public class Receiver {
 
     }
 
-    public void removeByIdCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void removeByIdCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[1];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -510,8 +510,8 @@ public class Receiver {
         }
     }
 
-    public void reorderCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
-        String[] args = new String[1];
+    public void reorderCommand(String[] arguments, String path, boolean isScript) {
+        String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
                 Collections.reverse(list);
@@ -523,7 +523,7 @@ public class Receiver {
 
     }
 
-    public void saveCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void saveCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -542,7 +542,7 @@ public class Receiver {
                     array = data.getBytes();
                     output.write(array);
                     for (MusicBand band : list) {
-                        data = "\t<MusicBand " + "id=\"" + band.getId() + "\" name=\"" + band.getName() + "\" genre=\"" + band.getGenre().toString() + "\" x=\"" + band.getCoordinates().getX() + "\" y=\"" + band.getCoordinates().getY() + "\" studio=\"" + band.getStudio().getName() + "\" number_of_participants=\"" + band.getNOP() + "\" />\n";
+                        data = "\t<MusicBand " + "id=\"" + band.getId() + "\" name=\"" + band.getName().replace("\"","&quot;") + "\" genre=\"" + band.getGenre().toString().replace("\"","&quot;") + "\" x=\"" + band.getCoordinates().getX().toString().replace("\"","&quot;") + "\" y=\"" + band.getCoordinates().getY().toString().replace("\"","&quot;") + "\" studio=\"" + band.getStudio().getName().replace("\"","&quot;") + "\" number_of_participants=\"" + band.getNOP() + "\" date=\"" + band.getCreationDate() + "\" />\n";
                         array = data.getBytes();
                         output.write(array);
                     }
@@ -550,10 +550,9 @@ public class Receiver {
                     array = data.getBytes();
                     output.write(array);
                     System.out.println("Коллекция сохранена в файл: " + path);
-
                     output.close();
                 } catch (Exception e) {
-                    e.getStackTrace();
+                    System.out.println("Ошибка: " + e.getMessage());
                 }
             }
         } catch (InvalidArgsException e) {
@@ -561,7 +560,7 @@ public class Receiver {
         }
     }
 
-    public void showCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void showCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -569,7 +568,7 @@ public class Receiver {
                     System.out.println("Коллекция пуста.");
                 } else {
                     for (MusicBand musicBand : list) {
-                        System.out.println("ID: " + musicBand.getId() + "\nИмя: " + musicBand.getName() + "\nЖанр: " + musicBand.getGenre() + "\nX: " + musicBand.getCoordinates().getX() + "\nY: " + musicBand.getCoordinates().getY() + "\nСтудия: " + musicBand.getStudio().getName() + "\nКол-во участников: " + musicBand.getNOP());
+                        System.out.println("ID: " + musicBand.getId() + "\nИмя: " + musicBand.getName() + "\nЖанр: " + musicBand.getGenre() + "\nX: " + musicBand.getCoordinates().getX() + "\nY: " + musicBand.getCoordinates().getY() + "\nСтудия: " + musicBand.getStudio().getName() + "\nКол-во участников: " + musicBand.getNOP() + "\nДата создания: " + musicBand.getCreationDate());
                         System.out.println();
                     }
                 }
@@ -580,7 +579,7 @@ public class Receiver {
 
     }
 
-    public void shuffleCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void shuffleCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -593,7 +592,7 @@ public class Receiver {
 
     }
 
-    public void sortCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void sortCommand(String[] arguments, String path, boolean isScript) {
         String[] args = new String[0];
         try {
             if (Command.isCorrectArgs(args, arguments)) {
@@ -625,7 +624,7 @@ public class Receiver {
             }
         }
     }
-    public void updateByIdCommand(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
+    public void updateByIdCommand(String[] arguments, String path, boolean isScript) {
         BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 
         Integer idToReplace = Integer.parseInt(arguments[0]);
@@ -637,10 +636,9 @@ public class Receiver {
         AddOperations operations = new AddOperations();
         UpdateOperations updOperations = new UpdateOperations();
 
-        if(Integer.parseInt(arguments[0]) > list.size()-1){
-            System.out.println("Максимальный ID: " + (list.size()-1));
+        if(Integer.parseInt(arguments[0]) > list.size()-1 || Integer.parseInt(arguments[0]) < 0){
+            System.out.println("Максимальный ID: " + (list.size()-1) + ". Минимальный ID: 0.");
         } else {
-
             try {
                 if (!isScript) {
                     if (Command.isCorrectArgs(args, arguments)) {
@@ -650,7 +648,8 @@ public class Receiver {
                         operations.setY(newBand, sc, "");
                         operations.setStudio(newBand, sc, "");
                         operations.setNOP(newBand, sc, "");
-                        updOperations.done(list, newBand, idToReplace, operations.coordinates, operations.studio);
+                        operations.setDate(newBand, sc, "");
+                        updOperations.done(newBand, idToReplace, operations.coordinates, operations.studio);
                     }
                 } else {
                     if (arguments.length == scrArgs.length + args.length) {
@@ -660,7 +659,8 @@ public class Receiver {
                         operations.setY(newBand, sc, arguments[4]);
                         operations.setStudio(newBand, sc, arguments[5]);
                         operations.setNOP(newBand, sc, arguments[6]);
-                        updOperations.done(list, newBand, idToReplace, operations.coordinates, operations.studio);
+                        operations.setDate(newBand, sc, "");
+                        updOperations.done(newBand, idToReplace, operations.coordinates, operations.studio);
                     } else {
                         System.out.println("Количество аргументов в скрипте в команде add не совпадает с нужным.");
                     }
@@ -671,7 +671,7 @@ public class Receiver {
         }
     }
     public static class UpdateOperations{
-        public void done(ArrayList<MusicBand> list, MusicBand newBand, Integer idToReplace, Coordinates coordinates, Studio studio){
+        public void done(MusicBand newBand, Integer idToReplace, Coordinates coordinates, Studio studio){
             newBand.setId(idToReplace);
             newBand.setCoordinates(coordinates);
             newBand.setStudio(studio);

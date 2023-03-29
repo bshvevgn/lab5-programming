@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class RemoveById implements Command {
 
-    public final static String[] args = {"id"};
+    public final static String[] args = {"id элемента"};
     public static String[] inputs = new String[0];
     public String[] getInputs() {
         return inputs;
@@ -22,10 +22,19 @@ public class RemoveById implements Command {
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
-        Receiver reciever = new Receiver(path);
-        reciever.removeByIdCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public RemoveById (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript) {
+        receiver.removeByIdCommand(arguments, path, isScript);
     }
 
     public boolean confirm(String input){

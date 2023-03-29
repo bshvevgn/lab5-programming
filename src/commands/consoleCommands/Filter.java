@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Filter implements Command{
 
-    public final static String[] args = new String[1];
+    public final static String[] args = {"имя жанра"};
     public static String[] inputs = new String[0];
     public String[] getInputs() {
         return inputs;
@@ -21,10 +21,19 @@ public class Filter implements Command{
         return args;
     }
 
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript){
-        Receiver reciever = new Receiver(path);
-        reciever.filterCommand(list, arguments, path, isScript);
-        return list;
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Filter (Receiver receiver){
+        this.receiver = receiver;
+    }
+
+    public void execute(String[] arguments, String path, boolean isScript){
+        receiver.filterCommand(arguments, path, isScript);
     }
 
     @Override

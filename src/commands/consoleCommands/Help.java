@@ -21,11 +21,20 @@ public class Help implements Command {
         return args;
     }
 
+    public boolean complicated = false;
+
+    public boolean isComplicated(){
+        return complicated;
+    }
+
+    Receiver receiver;
+    public Help (Receiver receiver){
+        this.receiver = receiver;
+    }
+
     @Override
-    public ArrayList<MusicBand> execute(ArrayList<MusicBand> list, String[] arguments, String path, boolean isScript) {
-        Receiver reciever = new Receiver(path);
-        reciever.helpCommand(list, arguments, path, isScript);
-        return list;
+    public void execute(String[] arguments, String path, boolean isScript) {
+        receiver.helpCommand(arguments, path, isScript);
     }
 
     @Override
