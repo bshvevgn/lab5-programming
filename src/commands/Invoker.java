@@ -9,14 +9,14 @@ import java.io.BufferedReader;
 import java.util.*;
 
 /**
- * This class is necessary for reading and executing commands
+ * This class is necessary for reading and executing supported commands
  */
 
 public class Invoker {
     public static final Map<String, Command> commands = new HashMap<>();
     private static final Map<String, Integer> intoFiles = new HashMap<>();
 
-    Receiver receiver;
+    public static Receiver receiver;
 
     public Invoker(Receiver receiver) {
         this.receiver = receiver;
@@ -80,8 +80,9 @@ public class Invoker {
                 if(isScriptRunning){
                     if(intoFiles.containsKey(path)){
                         Integer count = intoFiles.get(path);
-                        if(count >= 3){
-                            System.out.println("Достигнут максимальный уровень рекурсии (3) в заданном скрипте.");
+                        if(count >= 10){
+                            System.out.println("\nДостигнут максимальный уровень рекурсии в заданном скрипте.");
+                            receiver.setStop(true);
                             return;
                         }
                         intoFiles.put(path, ++count);
@@ -119,10 +120,10 @@ public class Invoker {
     }
 
     public static boolean isContains(String name){
-        return commands.containsKey(commandWord);
+        return commands.containsKey(name);
     }
 
     public static Command getCommand(String name){
-        return commands.get(commandWord);
+        return commands.get(name);
     }
 }

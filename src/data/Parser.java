@@ -16,6 +16,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.lang.Long.parseLong;
 
@@ -26,6 +28,8 @@ import static java.lang.Long.parseLong;
 public class Parser {
 
     public static ArrayList<MusicBand> list = new ArrayList<>();
+
+    public static ArrayList<Integer> IDs = new ArrayList<>();
 
     /**
      * Static method used for conversation XML structure into MusicBand instances.
@@ -48,13 +52,19 @@ public class Parser {
     private static class XMLHandler extends DefaultHandler {
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+
             try {
                 if (qName.equals("MusicBand")) {
                     MusicBand band = new MusicBand();
                     Coordinates coordinates = new Coordinates();
                     Studio studio = new Studio();
                     band.setId(list.size());
+                    IDs.add(Integer.parseInt(attributes.getValue("id")));
                     band.setName(attributes.getValue("name"));
+                    if(checkIdDublicates(IDs)){
+                        System.out.println("Ошибка. Дубликат значения ID у элемента с именем " + band.getName() + ", проверьте файл коллекции.");
+                        System.exit(1);
+                    }
                     coordinates.setX(Double.parseDouble(attributes.getValue("x")));
                     coordinates.setY(Float.parseFloat(attributes.getValue("y")));
                     band.setCoordinates(coordinates);
@@ -66,10 +76,20 @@ public class Parser {
                     band.setCreationDate(LocalDate.parse(attributes.getValue("date"), formatter));
                     list.add(band);
                 }
+
             } catch (NumberFormatException e){
                 System.out.println("Ошибка парсера. Проерьте исходный файл: " + e.getMessage());
                 System.exit(1);
             }
+        }
+    }
+
+    public static boolean checkIdDublicates(ArrayList<Integer> IDs){
+        Set<Integer> setOfIDs = new HashSet<Integer>(IDs);
+        if(setOfIDs.size() < IDs.size()){
+            return true;
+        } else {
+            return false;
         }
     }
 }

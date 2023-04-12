@@ -50,12 +50,16 @@ public class Receiver {
      *This class has a static method runCommand which reads commands
      *and executes them.
      */
-    public static void runCommand(String line, String path, boolean isScriptRunning) throws InvalidArgsException {
+    public void runCommand(String line, String path, boolean isScriptRunning, String[] scrArguments) throws InvalidArgsException {
         if (line.equals("")) return;
         String commandWord = line.toLowerCase().split(" ")[0];
         String[] arguments = new String[line.split(" ").length - 1];
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = line.split(" ")[i + 1];
+        }
+
+        if(isScriptRunning){
+            arguments = scrArguments;
         }
 
         new Invoker(commandWord, arguments).push(list, path, isScriptRunning);
@@ -68,6 +72,14 @@ public class Receiver {
             arguments[i] = line.split(" ")[i + 1];
         }
         return commandWord;
+    }
+
+    public static String[] argsFromLine(String line){
+        String[] arguments = new String[line.split(" ").length - 1];
+        for (int i = 0; i < arguments.length; i++) {
+            arguments[i] = line.split(" ")[i + 1];
+        }
+        return arguments;
     }
 
     public ArrayList<MusicBand> addCommand(String[] arguments, String path, boolean isScript) {
@@ -199,6 +211,7 @@ public class Receiver {
         }
 
         public void setStudio(MusicBand newBand, BufferedReader sc, String scrArg) throws IOException {
+
             if (Objects.equals(scrArg, "")) {
                 System.out.print("\nВведите значение поля Studio.name: ");
                 argument = sc.readLine();
@@ -242,7 +255,6 @@ public class Receiver {
             newBand.setStudio(studio);
             list.add(newBand);
             System.out.println("\nДобавлен новый объект: " + newBand.getName() + " (ID: " + newBand.getId() + ")");
-            System.out.println(newBand.getName().replace("\"","\\\""));
         }
 
         public String checkLine(BufferedReader sc) throws IOException {
@@ -305,41 +317,56 @@ public class Receiver {
     }
 
     public void executeCommand(String[] arguments, String path, boolean isScript) {
-        System.out.println("Выполнение скрипта...\n");
         String[] args = {"file_name"};
+        this.setScriptRunning(true);
         try {
             if (Command.isCorrectArgs(args, arguments)) {
                 String script_path = arguments[0];
                 File script_file = new File(script_path);
+                String commandName = "";
+                boolean makingArgs = false;
                 try {
-                    this.setScriptRunning(true);
                     Scanner sc = new Scanner(script_file);
+                    System.out.println("Выполнение скрипта...\n");
                     if (sc.hasNext()) {
                         do {
-                            /*
-                            String name = sc.nextLine();
+                            String line = sc.nextLine();
 
-                            if(isScriptRunning && Invoker.isContains(name)) {
-                                int argLines = 0;
-                                if (Invoker.getCommand(name).isComplicated()) {
-                                    argLines = Invoker.getCommand(name).getInputs().length;
-                                    for (int i = 0; i <= argLines - 1; i++) {
-                                        arguments[i] = sc.nextLine();
-                                    }
-                                }
+                            if(!makingArgs){
+                                commandName = line;
                             }
-                            */
-                            this.runCommand(sc.nextLine(), "", true);
+
+                            if(isScriptRunning && Invoker.isContains(commandFromLine(line))) {
+                                int argLines = 0;
+                                argLines = Invoker.getCommand(commandFromLine(line)).getInputs().length;
+                                String[] scrArgs = new String[argLines];
+                                if (Invoker.getCommand(commandFromLine(line)).isComplicated()) {
+                                    line = sc.nextLine();
+                                    makingArgs = true;
+                                    for (int i = 0; i <= argLines - 1; i++) {
+                                        scrArgs[i] = line;
+                                        if(i != argLines-1)
+                                        line = sc.nextLine();
+                                        makingArgs = false;
+                                    }
+                                    runCommand(commandName, "", true, scrArgs);
+                                    commandName = "";
+                                } else {
+                                    if(toStop()){
+                                        return;
+                                    }
+                                    runCommand(line, "", true, argsFromLine(line));
+                                }
+
+                            }
                         } while (sc.hasNext());
-                        if(!sc.hasNext()){
-                            System.out.println("\nВыполнение скрипта завершено.");
-                        }
+                        System.out.println("\nВыполнение скрипта завершено.");
                     } else {
                         System.out.println("Скрипт не содержит команд.");
                     }
                     this.setScriptRunning(false);
                 } catch (FileNotFoundException e) {
-                    System.out.println("Файл не обнаружен.");
+                    System.out.println("Ошибка: " + e.getMessage());
                 } catch (InvalidArgsException e) {
                     System.out.println(e.getMessage());
                 }
@@ -347,6 +374,16 @@ public class Receiver {
         } catch (InvalidArgsException e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
+    }
+
+    public static boolean toStop = false;
+
+    public static boolean toStop() {
+        return toStop;
+    }
+
+    public static void setStop(boolean stop) {
+        toStop = stop;
     }
 
     public void exitCommand(String[] arguments, String path, boolean isScript) {

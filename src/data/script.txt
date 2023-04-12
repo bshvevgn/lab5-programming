@@ -1,4 +1,3 @@
-show
 add
 name
 math_rock
@@ -7,3 +6,14 @@ math_rock
 studio
 3
 show
+shuffle
+add
+band name
+post_rock
+42.5
+345.9
+studio name
+4
+sort
+show
+execute_script src/data/script.txt

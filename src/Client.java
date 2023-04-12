@@ -17,6 +17,8 @@ public class Client {
 
     public Receiver receiver;
 
+    String[] array;
+
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
 
     public Client(String[] args) throws IOException, InvalidArgsException {
@@ -38,7 +40,7 @@ public class Client {
             String line = this.scanner.readLine();
             if (line == null) {
                 System.exit(1);
-            } else receiver.runCommand(line, dataPath, false);
+            } else receiver.runCommand(line, dataPath, false, array);
         }
     }
 }
